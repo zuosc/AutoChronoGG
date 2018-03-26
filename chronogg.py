@@ -13,6 +13,7 @@ import ctypes
 MAIN_URL = 'https://chrono.gg'
 POST_URL = 'https://api.chrono.gg/quest/spin'
 ALREADY_CLICKED_CODE = 420
+UNAUTHORIZED = 401
 USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'
 GLOBAL_HEADERS = {'User-Agent': USER_AGENT, 'Pragma': 'no-cache', 'Origin': MAIN_URL, 'Accept-Encoding': 'gzip, deflate, br', 'Accept': 'application/json', 'Cache-Control': 'no-cache', 'Connection': 'keep-alive', 'Referer': MAIN_URL}
 COOKIE_FILE_NAME = ".chronogg"
@@ -34,6 +35,8 @@ def getWebPage(url, headers, cookies):
         print("Error processing webpage: "+str(e))
         if (e.code == ALREADY_CLICKED_CODE):
             return ALREADY_CLICKED_CODE
+        if (e.code == UNAUTHORIZED):
+            return UNAUTHORIZED
         return None
 
 def saveCookie(cookie):
@@ -55,6 +58,14 @@ def getCookieFromfile():
     except:
         return ''
 
+def sendNotify():
+    title = 'chronogg'
+    content = '用户凭证已失效\r\n'
+    sendurl = 'http://sc.ftqq.com/SCU5209T50ff781c69372d9b370387f5c079be01587ae52428055.send?'
+    params = {'text': title, 'desp': content}
+    params = urllib.parse.urlencode(params)
+    urllib.request.urlopen(sendurl + params)
+
 def main():
     try:
         if (len(sys.argv) < 2):
@@ -75,6 +86,10 @@ def main():
         elif (results == ALREADY_CLICKED_CODE):
             print('An error occurred while fetching results: Coin already clicked. Terminating...')
             saveCookie(ggCookie)
+            return
+        elif (results == UNAUTHORIZED):
+            print('An error occurred while fetching results: UNAUTHORIZED. Terminating...')
+            sendNotify()
             return
         print ('Done.')
         saveCookie(ggCookie)
