@@ -20,3 +20,8 @@ In order to obtain your Authorization Token, you must follow these steps:
 This script is meant to be run once per day, so here goes a crontab example for the lazy:
 
     0 17 * * * root cd /usr/local/bin/ && ./chronogg.py
+    
+    OR
+    
+    0 */2 * * * python3 chronogg.py >>/var/log/autochronogg.log 2>&1
+
