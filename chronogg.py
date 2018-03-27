@@ -9,6 +9,7 @@ import urllib.error
 import sys
 import os
 import ctypes
+import time
 
 MAIN_URL = 'https://chrono.gg'
 POST_URL = 'https://api.chrono.gg/quest/spin'
@@ -67,6 +68,7 @@ def sendNotify():
     urllib.request.urlopen(sendurl + params)
 
 def main():
+    print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
     try:
         if (len(sys.argv) < 2):
             ggCookie = getCookieFromfile()
